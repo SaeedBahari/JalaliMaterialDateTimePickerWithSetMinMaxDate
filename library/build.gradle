@@ -1,8 +1,11 @@
-apply plugin: 'com.android.library'
-
+//apply plugin: 'com.android.library'
+plugins {
+    id  "com.android.application"
+    id 'maven-publish'
+}
 android {
-    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
-    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+    compileSdk 33
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
         minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
@@ -23,8 +26,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
@@ -42,4 +52,18 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.2.0'
 }
 
-apply from: 'gradle-mvn-push.gradle'
+//apply from: 'gradle-mvn-push.gradle'
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.SaeedBahari'
+            artifactId = 'jalalimaterialdatetimepicker'
+            version = '0.0.1'
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+}
